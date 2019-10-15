@@ -71,7 +71,7 @@ protected:
 	POINT cursor;			///< Used for converting mouse coordinates for client to screen space
 	Input* input;			///< Pointer to input class
 	D3D* renderer;			///< Pointer to renderer
-	FPCamera* camera;			///< Pointer to camera object
+	FPCamera* camera;		///< Pointer to camera object
 	Timer* timer;			///< Pointer to timer object (for delta time and FPS)
 	TextureManager* textureMgr;	///< Pointer to texture manager (handles loading and storing of textures)
 	bool wireframeToggle;	///< Boolean tracking if wireframe is de/activated

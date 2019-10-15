@@ -20,18 +20,24 @@ public:
 protected:
 	bool render();
 	void firstPass();
+	void secondPass();
 	void finalPass();
 	void gui();
 
 private:
 	CubeMesh* cubeMesh;
-	OrthoMesh* orthoMesh;
+	OrthoMesh* orthoMesh1;
+	OrthoMesh *orthoMesh2;
 	LightShader* lightShader;
 	TextureShader* textureShader;
 
-	RenderTexture* renderTexture;
+	RenderTexture* renderTexture1;
+	RenderTexture *renderTexture2;
 
 	Light* light;
+	Camera *rttCam1;
+	Camera *rttCam2;
+	float doTextures;	//Set this value to 0 to turn off lighting --- Set this value to any positive value to turn on lighting
 };
 
 #endif
