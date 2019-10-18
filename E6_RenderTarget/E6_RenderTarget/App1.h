@@ -6,6 +6,7 @@
 #include "DXF.h"	// include dxframework
 #include "LightShader.h"
 #include "TextureShader.h"
+#include "PositionShader.h"
 
 class App1 : public BaseApplication
 {
@@ -21,15 +22,17 @@ protected:
 	bool render();
 	void firstPass();
 	void secondPass();
+	void drawPlayerLocation();
 	void finalPass();
 	void gui();
 
 private:
-	CubeMesh* cubeMesh;
+	PlaneMesh* planeMesh;
 	OrthoMesh* orthoMesh1;
 	OrthoMesh *orthoMesh2;
 	LightShader* lightShader;
 	TextureShader* textureShader;
+	PositionShader* positionShader;
 
 	RenderTexture* renderTexture1;
 	RenderTexture *renderTexture2;

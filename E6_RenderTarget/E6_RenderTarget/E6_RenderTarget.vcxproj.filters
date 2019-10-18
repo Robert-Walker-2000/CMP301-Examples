@@ -27,6 +27,9 @@
     <ClCompile Include="App1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PositionShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App1.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TextureShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PositionShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,6 +56,9 @@
       <Filter>Resource Files</Filter>
     </FxCompile>
     <FxCompile Include="shaders\texture_vs.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="position_ps.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
   </ItemGroup>
