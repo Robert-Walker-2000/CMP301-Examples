@@ -10,15 +10,16 @@ class PositionShader : public BaseShader
 private:
 	struct PositionBufferType
 	{
-		XMFLOAT3 playerPosition;
-		float padding;
+		XMFLOAT2 playerPosition;
+		XMFLOAT2 padding;
 	};
 
 public:
 	PositionShader(ID3D11Device* device, HWND hwnd);
 	~PositionShader();
 
-	void setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &world, const XMMATRIX &view, const XMMATRIX &projection, ID3D11ShaderResourceView* texture, XMFLOAT3 playerPosition);
+	void setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &world, const XMMATRIX &view, const XMMATRIX &projection, const XMMATRIX &orthoView, const XMMATRIX &ortho, 
+							int screenWidth, int screenHeight, ID3D11ShaderResourceView* texture, XMFLOAT3 playerPosition);
 
 private:
 	void initShader(const wchar_t* vs, const wchar_t* ps);

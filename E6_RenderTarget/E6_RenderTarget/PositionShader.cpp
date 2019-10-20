@@ -85,7 +85,8 @@ void PositionShader::initShader(const wchar_t* vsFilename, const wchar_t* psFile
 }
 
 
-void PositionShader::setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT3 playerPosition)
+void PositionShader::setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix, const XMMATRIX &orthoViewMatrix, const XMMATRIX &orthoMatrix, int screenWidth, int screenHeight,
+											ID3D11ShaderResourceView* texture, XMFLOAT3 playerPosition)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -96,8 +97,8 @@ void PositionShader::setShaderParameters(ID3D11DeviceContext* deviceContext, con
 
 	// Transpose the matrices to prepare them for the shader.
 	tworld = XMMatrixTranspose(worldMatrix);
-	tview = XMMatrixTranspose(viewMatrix);
-	tproj = XMMatrixTranspose(projectionMatrix);
+	tview = XMMatrixTranspose(orthoViewMatrix);
+	tproj = XMMatrixTranspose(orthoMatrix);
 	result = deviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
 	dataPtr->world = tworld;// worldMatrix;
@@ -106,12 +107,35 @@ void PositionShader::setShaderParameters(ID3D11DeviceContext* deviceContext, con
 	deviceContext->Unmap(matrixBuffer, 0);
 	deviceContext->VSSetConstantBuffers(0, 1, &matrixBuffer);
 
+	//Multiply player position by matrices to map it to screen space
+	XMFLOAT4 positionFloat = XMFLOAT4(playerPosition.x, playerPosition.y, playerPosition.z, 1.0f);
+	XMVECTOR positionVector = XMLoadFloat4(&positionFloat);		//Load the float4 into a vector for matrix multiplication
+	positionVector = XMVector4Transform(positionVector, worldMatrix);
+	positionVector = XMVector4Transform(positionVector, viewMatrix);
+	positionVector = XMVector4Transform(positionVector, projectionMatrix);
+	positionVector /= XMVectorGetByIndex(positionVector, 3);
+
+	//Set up a float2 using the values in the vector and finish converting to screenspace
+	XMFLOAT2 position2D;
+	position2D.x = XMVectorGetByIndex(positionVector, 0);
+	position2D.y = XMVectorGetByIndex(positionVector, 1);
+
+	position2D.x *= 0.5f;
+	position2D.y *= -0.5f;
+
+	position2D.x += 0.5f;
+	position2D.y += 0.5f;
+
+	position2D.x *= screenWidth;
+	position2D.y *= screenHeight;
+
+
 	//Additional
 	// Send position data to pixel shader
 	PositionBufferType* positionPtr;
 	deviceContext->Map(positionBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	positionPtr = (PositionBufferType*)mappedResource.pData;
-	positionPtr->playerPosition = playerPosition;
+	positionPtr->playerPosition = position2D;
 	deviceContext->Unmap(positionBuffer, 0);
 	deviceContext->PSSetConstantBuffers(0, 1, &positionBuffer);
 

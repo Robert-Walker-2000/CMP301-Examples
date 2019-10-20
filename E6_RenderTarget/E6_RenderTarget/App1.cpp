@@ -156,7 +156,7 @@ void App1::drawPlayerLocation()
 
 	//Render quad with render texture (mini map)
 	orthoMesh1->sendData(renderer->getDeviceContext());
-	positionShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, orthoViewMatrix, orthoMatrix, renderTexture1->getShaderResourceView(), camera->getPosition());
+	positionShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, orthoViewMatrix, orthoMatrix, sWidth, sHeight, renderTexture1->getShaderResourceView(), camera->getPosition());
 	positionShader->render(renderer->getDeviceContext(), orthoMesh1->getIndexCount());
 
 	renderer->setZBuffer(true);
