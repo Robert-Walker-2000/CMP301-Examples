@@ -21,6 +21,7 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	verticalBlurShader = new VerticalBlurShader(renderer->getDevice(), hwnd);
 
 	renderTexture = new RenderTexture(renderer->getDevice(), screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH);
+	downscaleTexture = new RenderTexture(renderer->getDevice(), screenWidth / 2, screenHeight / 2, SCREEN_NEAR, SCREEN_DEPTH);
 	horizontalBlurTexture = new RenderTexture(renderer->getDevice(), screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH);
 	verticalBlurTexture = new RenderTexture(renderer->getDevice(), screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH);
 
@@ -65,6 +66,8 @@ bool App1::render()
 {
 	// Render scene
 	firstPass();
+	//Downsample the texture to a quarter of the size
+	downscalePass();
 	// Apply horizontal blur stage
 	horizontalBlur();
 	// Apply vertical blur to the horizontal blur stage
@@ -96,6 +99,24 @@ void App1::firstPass()
 	renderer->setBackBufferRenderTarget();
 }
 
+void App1::downscalePass()
+{
+	downscaleTexture->setRenderTarget(renderer->getDeviceContext());
+	downscaleTexture->clearRenderTarget(renderer->getDeviceContext(), 0.0f, 0.0f, 1.0f, 1.0f);
+
+	XMMATRIX worldMatrix = renderer->getWorldMatrix();
+	XMMATRIX viewMatrix = camera->getOrthoViewMatrix();
+	XMMATRIX orthoMatrix = renderer->getOrthoMatrix();
+
+	renderer->setZBuffer(false);
+	orthoMesh->sendData(renderer->getDeviceContext());
+	textureShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, orthoMatrix, renderTexture->getShaderResourceView());
+	textureShader->render(renderer->getDeviceContext(), orthoMesh->getIndexCount());
+	renderer->setZBuffer(true);
+
+	renderer->setBackBufferRenderTarget();
+}
+
 void App1::horizontalBlur()
 {
 	XMMATRIX worldMatrix, baseViewMatrix, orthoMatrix;
@@ -111,7 +132,7 @@ void App1::horizontalBlur()
 	// Render for Horizontal Blur
 	renderer->setZBuffer(false);
 	orthoMesh->sendData(renderer->getDeviceContext());
-	horizontalBlurShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, baseViewMatrix, orthoMatrix, renderTexture->getShaderResourceView(), screenSizeX);
+	horizontalBlurShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, baseViewMatrix, orthoMatrix, downscaleTexture->getShaderResourceView(), screenSizeX);
 	horizontalBlurShader->render(renderer->getDeviceContext(), orthoMesh->getIndexCount());
 	renderer->setZBuffer(true);
 
