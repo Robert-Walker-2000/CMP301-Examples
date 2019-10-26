@@ -115,6 +115,7 @@ void ManipulationShader::setShaderParameters(ID3D11DeviceContext* deviceContext,
 	deviceContext->Unmap(matrixBuffer, 0);
 	deviceContext->VSSetConstantBuffers(0, 1, &matrixBuffer);
 
+	//Load the time buffer with variables for the wave calculation
 	TimeBufferType* timePtr;
 	deviceContext->Map(timeBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	timePtr = (TimeBufferType*)mappedResource.pData;
@@ -123,6 +124,11 @@ void ManipulationShader::setShaderParameters(ID3D11DeviceContext* deviceContext,
 	timePtr->frequency = freq;
 	deviceContext->Unmap(timeBuffer, 0);
 	deviceContext->VSSetConstantBuffers(1, 1, &timeBuffer);
+
+	//Set height map texture for use in the vertex shader
+	deviceContext->VSSetShaderResources(0, 1, &texture);
+	deviceContext->VSSetSamplers(0, 1, &sampleState);
+
 
 	//Additional
 	// Send light data to pixel shader

@@ -1,5 +1,8 @@
 // Light vertex shader
 // Standard issue vertex shader, apply matrices, pass info to pixel shader
+Texture2D heightMap : register(t0);
+SamplerState heightSampler : register(s0);
+
 cbuffer MatrixBuffer : register(b0)
 {
 	matrix worldMatrix;
@@ -33,13 +36,24 @@ OutputType main(InputType input)
 {
 	OutputType output;
 
+	//Wave calculations
+	/*
 	//Manipulate the y value to generate a sine wave
 	input.position.y = amplitude * sin(input.position.x * frequency + time);
 	input.position.y += cos(input.position.z + time);
 
 	//Recalculate the normals after the vertex manipulation
-	//input.normal.x = 1 - cos(input.position.x * frequency + time);
-	//input.normal.y = abs(cos(input.position.x + time));
+	input.normal.x = 1 - cos(input.position.x * frequency + time);
+	input.normal.y = abs(cos(input.position.x + time));
+	*/
+
+	float mappedHeight;
+	float4 heightColour;
+
+    heightColour = heightMap.SampleLevel(heightSampler, input.tex, 0);
+	mappedHeight = 10 * length(heightColour);
+	input.position.y = mappedHeight;
+	
 
 	// Calculate the position of the vertex against the world, view, and projection matrices.
 	output.position = mul(input.position, worldMatrix);
@@ -51,7 +65,7 @@ OutputType main(InputType input)
 
 	// Calculate the normal vector against the world matrix only and normalise.
 	output.normal = mul(input.normal, (float3x3)worldMatrix);
-	output.normal = normalize(output.normal);
+    output.normal = normalize(output.normal);
 
 	return output;
 }

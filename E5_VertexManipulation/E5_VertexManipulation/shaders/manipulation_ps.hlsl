@@ -36,6 +36,7 @@ float4 main(InputType input) : SV_TARGET
 	lightColour = calculateLighting(-lightDirection, input.normal, diffuseColour);
 	
 	return lightColour * textureColour;
+
 }
 
 
