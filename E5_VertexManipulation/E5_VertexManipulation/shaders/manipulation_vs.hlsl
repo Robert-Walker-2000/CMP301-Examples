@@ -7,6 +7,14 @@ cbuffer MatrixBuffer : register(b0)
 	matrix projectionMatrix;
 };
 
+cbuffer TimeBuffer : register(b1)
+{
+	float time;
+	float amplitude;
+	float frequency;
+	float padding;
+};
+
 struct InputType
 {
 	float4 position : POSITION;
@@ -24,6 +32,14 @@ struct OutputType
 OutputType main(InputType input)
 {
 	OutputType output;
+
+	//Manipulate the y value to generate a sine wave
+	input.position.y = amplitude * sin(input.position.x * frequency + time);
+	input.position.y += cos(input.position.z + time);
+
+	//Recalculate the normals after the vertex manipulation
+	//input.normal.x = 1 - cos(input.position.x * frequency + time);
+	//input.normal.y = abs(cos(input.position.x + time));
 
 	// Calculate the position of the vertex against the world, view, and projection matrices.
 	output.position = mul(input.position, worldMatrix);

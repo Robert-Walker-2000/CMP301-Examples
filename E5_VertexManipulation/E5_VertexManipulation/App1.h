@@ -25,6 +25,11 @@ private:
 	ManipulationShader* shader;
 	PlaneMesh* mesh;
 	Light* light;
+
+	float totalTime = 0.0f;
+	float amplitude = 1.0f;
+	float frequency = 1.0f;
+	float speed = 1.0f;
 };
 
 #endif
