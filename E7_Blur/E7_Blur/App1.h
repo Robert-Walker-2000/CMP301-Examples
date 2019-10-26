@@ -22,6 +22,7 @@ public:
 protected:
 	bool render();
 	void firstPass();
+	void downscalePass();
 	void verticalBlur();
 	void horizontalBlur();
 	void finalPass();
@@ -34,8 +35,10 @@ private:
 	TextureShader* textureShader;
 
 	RenderTexture* renderTexture;
+	RenderTexture* downscaleTexture;
 	RenderTexture* horizontalBlurTexture;
 	RenderTexture* verticalBlurTexture;
+
 	VerticalBlurShader* verticalBlurShader;
 	HorizontalBlurShader* horizontalBlurShader;
 	
