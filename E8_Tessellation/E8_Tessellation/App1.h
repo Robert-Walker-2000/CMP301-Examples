@@ -23,9 +23,10 @@ protected:
 private:
 	TessellationMesh* mesh;
 	TessellationShader* shader;
+	QuadMesh* quad;
 
 	int edgeFactor[3] = { 1, 1, 1 };
-	int insideFactor = 1;
+	int insideFactor[2] = { 1, 1 };
 };
 
 #endif

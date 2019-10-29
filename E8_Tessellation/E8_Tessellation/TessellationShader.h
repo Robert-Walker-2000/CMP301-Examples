@@ -15,7 +15,10 @@ class TessellationShader : public BaseShader
 		float edgeFactor1;
 		float edgeFactor2;
 		float edgeFactor3;
-		float insideFactor;
+		float edgeFactor4;
+		float insideFactor1;
+		float insideFactor2;
+		XMFLOAT2 padding;
 	};
 
 public:
@@ -24,7 +27,7 @@ public:
 	~TessellationShader();
 
 	void setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &world, const XMMATRIX &view, const XMMATRIX &projection,
-								int edgeFactor[], int insideFactor);
+								int edgeFactor[], int insideFactor[]);
 
 private:
 	void initShader(const wchar_t* vsFilename, const wchar_t* psFilename);

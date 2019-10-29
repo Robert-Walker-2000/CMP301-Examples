@@ -73,7 +73,7 @@ void TessellationShader::initShader(const wchar_t* vsFilename, const wchar_t* hs
 
 
 void TessellationShader::setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix,
-												int edgeFactor[], int insideFactor)
+												int edgeFactor[], int insideFactor[])
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -98,7 +98,9 @@ void TessellationShader::setShaderParameters(ID3D11DeviceContext* deviceContext,
 	tessPtr->edgeFactor1 = edgeFactor[0];
 	tessPtr->edgeFactor2 = edgeFactor[1];
 	tessPtr->edgeFactor3 = edgeFactor[2];
-	tessPtr->insideFactor = insideFactor;
+	tessPtr->edgeFactor4 = edgeFactor[3];
+	tessPtr->insideFactor1 = insideFactor[0];
+	tessPtr->insideFactor2 = insideFactor[1];
 	deviceContext->Unmap(tessBuffer, 0);
 	deviceContext->HSSetConstantBuffers(0, 1, &tessBuffer);
 }
