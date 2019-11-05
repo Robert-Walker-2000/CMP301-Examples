@@ -22,11 +22,15 @@ protected:
 	bool render();
 	void depthPass();
 	void finalPass();
+	void shadowMapRender();
 	void gui();
 
 private:
 	TextureShader* textureShader;
-	PlaneMesh* mesh;
+	PlaneMesh* planeMesh;
+	SphereMesh* sphereMesh;
+	CubeMesh* cubeMesh;
+	float rotation = 0.0f;
 
 	Light* light;
 	Model* model;
