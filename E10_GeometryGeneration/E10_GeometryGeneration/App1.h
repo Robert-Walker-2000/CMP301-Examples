@@ -22,7 +22,7 @@ protected:
 
 private:
 	GeometryShader* geometryShader;
-	PointMesh* mesh;
+	TriangleMesh* mesh;
 };
 
 #endif

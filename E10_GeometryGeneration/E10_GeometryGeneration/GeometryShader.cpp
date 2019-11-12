@@ -3,7 +3,7 @@
 
 GeometryShader::GeometryShader(ID3D11Device* device, HWND hwnd) : BaseShader(device, hwnd)
 {
-	initShader(L"triangle_vs.cso", L"triangle_gs.cso", L"triangle_ps.cso");
+	initShader(L"triangle_vs.cso", L"triangleEnlarge_gs.cso", L"triangle_ps.cso");
 }
 
 GeometryShader::~GeometryShader()
@@ -50,6 +50,18 @@ void GeometryShader::initShader(const wchar_t* vsFilename, const wchar_t* psFile
 	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
 	renderer->CreateBuffer(&matrixBufferDesc, NULL, &matrixBuffer);
 
+	D3D11_SAMPLER_DESC samplerDesc;
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	renderer->CreateSamplerState(&samplerDesc, &sampleState);
+
 }
 
 void GeometryShader::initShader(const wchar_t* vsFilename, const wchar_t* gsFilename, const wchar_t* psFilename)
@@ -62,7 +74,7 @@ void GeometryShader::initShader(const wchar_t* vsFilename, const wchar_t* gsFile
 }
 
 
-void GeometryShader::setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix)
+void GeometryShader::setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix, ID3D11ShaderResourceView* texture)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType* dataPtr;
@@ -80,5 +92,6 @@ void GeometryShader::setShaderParameters(ID3D11DeviceContext* deviceContext, con
 	deviceContext->Unmap(matrixBuffer, 0);
 	deviceContext->GSSetConstantBuffers(0, 1, &matrixBuffer);
 
-
+	deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetSamplers(0, 1, &sampleState);
 }
