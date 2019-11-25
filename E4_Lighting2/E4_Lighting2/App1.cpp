@@ -14,13 +14,27 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	BaseApplication::init(hinstance, hwnd, screenWidth, screenHeight, in, VSYNC, FULL_SCREEN);
 
 	// Create Mesh object and shader object
-	mesh = new PlaneMesh(renderer->getDevice(), renderer->getDeviceContext());
+	mesh = new SphereMesh(renderer->getDevice(), renderer->getDeviceContext());
 	textureMgr->loadTexture(L"brick", L"res/brick1.dds");
 	shader = new LightShader(renderer->getDevice(), hwnd);
-	light = new Light;
-	light->setAmbientColour(0.0f, 0.0f, 0.0f, 1.0f);
-	light->setDiffuseColour(1.0f, 1.0f, 1.0f, 1.0f);
-	light->setPosition(50.0f, 10.0f, 50.0f);
+
+	light[0] = new Light;
+	light[0]->setAmbientColour(0.0f, 0.0f, 0.2f, 1.0f);
+	light[0]->setDiffuseColour(0.0f, 0.0f, 1.0f, 1.0f);
+	light[0]->setPosition(-5.0f, 0.0f, 0.0f);
+	isDirectional[0] = 0;
+
+	light[1] = new Light;
+	light[1]->setAmbientColour(0.2f, 0.0f, 0.0f, 1.0f);
+	light[1]->setDiffuseColour(1.0f, 0.0f, 0.0f, 1.0f);
+	light[1]->setPosition(5.0f, 0.0f, 0.0f);
+	isDirectional[1] = 0;
+
+	light[2] = new Light;
+	light[2]->setAmbientColour(0.0f, 0.2f, 0.0f, 1.0f);
+	light[2]->setDiffuseColour(0.0f, 1.0f, 0.0f, 1.0f);
+	light[2]->setPosition(0.0f, 1.0f, -0.25f);
+	isDirectional[2] = 1;
 
 }
 
@@ -82,7 +96,7 @@ bool App1::render()
 
 	// Send geometry data, set shader parameters, render object with shader
 	mesh->sendData(renderer->getDeviceContext());
-	shader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture(L"brick"), light);
+	shader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture(L"brick"), light, isDirectional);
 	shader->render(renderer->getDeviceContext(), mesh->getIndexCount());
 
 	// Render GUI

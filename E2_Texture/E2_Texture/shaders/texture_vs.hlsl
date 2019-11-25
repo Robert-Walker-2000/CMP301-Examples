@@ -32,5 +32,8 @@ OutputType main(InputType input)
 	// Store the texture coordinates for the pixel shader.
 	output.tex = input.tex;
 
+	//Offset the textures
+	//output.tex += float2(-0.5, -0.5);
+
 	return output;
 }

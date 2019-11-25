@@ -23,8 +23,9 @@ protected:
 
 private:
 	LightShader* shader;
-	PlaneMesh* mesh;
-	Light* light;
+	SphereMesh* mesh;
+	Light* light[NUM_LIGHTS];
+	bool isDirectional[NUM_LIGHTS]; //Tracks whether or not the light is directional. If not, it is treated as a point light
 };
 
 #endif

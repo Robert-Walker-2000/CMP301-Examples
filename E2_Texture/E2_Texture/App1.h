@@ -23,7 +23,12 @@ protected:
 
 private:
 	TextureShader* textureShader;
-	TexturedQuad* mesh;
+	TexturedQuad* mesh1;
+	TexturedQuad* mesh2;
+
+	//Added to allow constant rotation of quads
+	int rotation1 = 0;
+	int rotation2 = 0;
 };
 
 #endif
